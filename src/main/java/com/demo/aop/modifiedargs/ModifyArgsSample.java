@@ -1,0 +1,26 @@
+package com.demo.aop.modifiedargs;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
+
+@Component
+@Aspect
+public class ModifyArgsSample {
+
+    @Pointcut("execution(* com.demo.aop.model.Student.echo(..))")
+    public void trackEchoMethod() {}
+
+    @Around("trackEchoMethod()")
+    public Object adviceEcho(ProceedingJoinPoint pjp) throws Throwable {
+        System.out.println("Starting the around advice.");
+        Object arg = pjp.getArgs()[0];
+        String modifiedArg = arg != null ? "Modified " + arg : "Modified null :0";
+        Object ret = pjp.proceed(new Object[]{modifiedArg});
+        System.out.println("At the end of the advice");
+        return ret;
+    }
+
+}
